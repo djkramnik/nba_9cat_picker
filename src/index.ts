@@ -1,4 +1,5 @@
 import * as readline from 'readline'
+import { exec } from 'child_process'
 
 const prompt = readline.createInterface({
   input: process.stdin,
@@ -19,7 +20,7 @@ async function driver() {
     doIt(cmd)
   }
 
-  console.log('hope to see you again soon friend')
+  exec('say hope to see you again soon friend')
 }
 
 function getInput(promptText: string): Promise<string> {
