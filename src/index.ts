@@ -1,5 +1,4 @@
-export interface WeeklyStats {
-  weekIndex: number
+export interface AvgWeeklyStats {
   fgPct: number
   ftPct: number
   threePt: number
@@ -14,8 +13,8 @@ export interface WeeklyStats {
 export interface Player {
   positions: string[]
   fullName: string
-  lastYearStats: WeeklyStats[]
-  twoYearAgoStats: WeeklyStats[]
+  lastYearStats: AvgWeeklyStats[]
+  twoYearAgoStats: AvgWeeklyStats[]
 }
 
 export interface ScoredPlayer {
@@ -23,8 +22,24 @@ export interface ScoredPlayer {
   player: Player
 }
 
+export interface StatWeights {
+  statWeight: number
+  statRemainingWeight: number
+  remainingDistribution: number
+}
+
 export interface Weights {
-  
+  fgPct: StatWeights
+  ftPct: StatWeights
+  threePt: StatWeights
+  points: StatWeights
+  rebounds: StatWeights
+  assists: StatWeights
+  steals: StatWeights
+  blocks: StatWeights
+  turnovers: StatWeights
+  caringAboutPositions: number // how much do we care about filling out our roster positions
+  adpWindowSize: number // 
 }
 
 export interface EvalFns {
