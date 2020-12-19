@@ -1,102 +1,47 @@
-export interface AvgWeeklyStats {
-  fgPct: number
-  ftPct: number
-  threePt: number
-  points: number
-  rebounds: number
-  assists: number
-  steals: number
-  blocks: number
-  turnovers: number
+import * as readline from 'readline'
+
+const prompt = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+let cmd: string = ''
+
+;(async () => {
+  await driver()
+  process.exit()
+})()
+
+async function driver() {
+  while (cmd !== 'exit') {
+    cmd = await getInput('Enter cmd: ')
+    if (cmd === 'exit') continue
+    doIt(cmd)
+  }
+
+  console.log('hope to see you again soon friend')
 }
 
-export interface Player {
-  positions: string[]
-  fullName: string
-  lastYearStats: AvgWeeklyStats[]
-  twoYearAgoStats: AvgWeeklyStats[]
-}
-
-export interface ScoredPlayer {
-  score: number
-  player: Player
-}
-
-export interface StatWeights {
-  statWeight: number
-  statRemainingWeight: number
-  remainingDistribution: number
-}
-
-export interface Weights {
-  fgPct: StatWeights
-  ftPct: StatWeights
-  threePt: StatWeights
-  points: StatWeights
-  rebounds: StatWeights
-  assists: StatWeights
-  steals: StatWeights
-  blocks: StatWeights
-  turnovers: StatWeights
-  caringAboutPositions: number // how much do we care about filling out our roster positions
-  adpWindowSize: number // 
-}
-
-export interface EvalFns {
-  getValueOfTopN: (pick: number, weights: Weights) => number
-  getEvaluator: ({
-    draftState,
-    weights,
-    playersRemaining,
-  }: {
-    draftState: DraftState
-    weights: Weights
-    playersRemaining: Player[]
-  }) => (player: Player) => number
-}
-
-export interface Roster {
-  draftOrder: number // 1- 12
-  roster: Player[]
-}
-
-export interface DraftState {
-  pick: number
-  rosters: Roster[]
-}
-
-export function pick({
-  playersRemaining,
-  weights,
-  evalFns,
-  draftState,
-}: {
-  playersRemaining: Player[]
-  weights: Weights
-  evalFns: EvalFns
-  draftState: DraftState
-}): ScoredPlayer[] {
-  const { getValueOfTopN, getEvaluator } = evalFns
-  const evalFn = getEvaluator({
-    draftState,
-    weights,
-    playersRemaining,
-  })
-  const { pick } = draftState
-  const topNPlayers = playersRemaining.slice(0, getValueOfTopN(pick, weights))
-  
-  return topNPlayers.reduce((scoredPlayers, player) => {
-    return scoredPlayers.concat({
-      score: evalFn(player),
-      player,
+function getInput(promptText: string): Promise<string> {
+  return new Promise(resolve => {
+    prompt.question(promptText, input => {
+      resolve(input)  
     })
-  }, [] as ScoredPlayer[])
-  .sort((a, b) => {
-    return b.score - a.score
   })
-  // returns the players sorted by their score, with highest first.
-  // to get the top pick select the first index of this array
 }
 
-
-
+function doIt(cmd: string): void {
+  const rootCmd = cmd.split(' ')[0]
+  switch(rootCmd) {
+    case 'p':
+    case 'pick':
+      console.log('You seem to be picking something.', cmd)
+      break
+    case 'move':
+      console.log('You seem to be having a movement', cmd)
+      break
+    default:
+      console.log(`I'm not smart enough to do that`, cmd)
+      break
+  }
+}

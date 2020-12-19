@@ -1,15 +1,36 @@
-import { Player, Roster } from "./index";
+import { DraftPlayerParams, DraftState, EvalFns, Player, ScoredPlayer, Weights } from "./types"
 
-export interface DraftPlayerParams {
+export function pick({
+  playersRemaining,
+  weights,
+  evalFns,
+  draftState,
+}: {
   playersRemaining: Player[]
-  rosters: Roster[]
-  draftMove: DraftMove
-}
-
-export interface DraftMove {
-  playerIdentifiers: Partial<Player>
-  findPlayerByIdentifiers: (players: Player[], identifiers: Partial<Player>) => number
-  rosterDraftOrder: number
+  weights: Weights
+  evalFns: EvalFns
+  draftState: DraftState
+}): ScoredPlayer[] {
+  const { getValueOfTopN, getEvaluator } = evalFns
+  const evalFn = getEvaluator({
+    draftState,
+    weights,
+    playersRemaining,
+  })
+  const { pick } = draftState
+  const topNPlayers = playersRemaining.slice(0, getValueOfTopN(pick, weights))
+  
+  return topNPlayers.reduce((scoredPlayers, player) => {
+    return scoredPlayers.concat({
+      score: evalFn(player),
+      player,
+    })
+  }, [] as ScoredPlayer[])
+  .sort((a, b) => {
+    return b.score - a.score
+  })
+  // returns the players sorted by their score, with highest first.
+  // to get the top pick select the first index of this array
 }
 
 export function draftPlayerToRoster(draftPlayerParams: DraftPlayerParams): void {
