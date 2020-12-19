@@ -23,7 +23,9 @@ export interface ScoredPlayer {
   player: Player
 }
 
-export interface Weights {}
+export interface Weights {
+  
+}
 
 export interface EvalFns {
   getValueOfTopN: (pick: number, weights: Weights) => number
@@ -58,7 +60,7 @@ export function pick({
   weights: Weights
   evalFns: EvalFns
   draftState: DraftState
-}) {
+}): ScoredPlayer[] {
   const { getValueOfTopN, getEvaluator } = evalFns
   const evalFn = getEvaluator({
     draftState,
